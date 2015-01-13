@@ -141,7 +141,7 @@ namespace AsyncPoco
 		/// <summary>
 		/// Automatically close one open shared connection 
 		/// </summary>
-		public void Dispose()
+		public virtual void Dispose()
 		{
 			// Automatically close one open connection reference
 			//  (Works with KeepConnectionAlive and manually opening a shared connection)
