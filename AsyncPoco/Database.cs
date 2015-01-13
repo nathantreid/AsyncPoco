@@ -229,9 +229,9 @@ namespace AsyncPoco
 		/// Transactions can be nested but they must all be completed otherwise the entire
 		/// transaction is aborted.
 		/// </remarks>
-		public Task<ITransaction> GetTransactionAsync()
+		public Task<ITransaction> GetTransactionAsync(IsolationLevel isolationLevel= IsolationLevel.Unspecified)
 		{
-			return Transaction.BeginAsync(this);
+			return Transaction.BeginAsync(this, isolationLevel);
 		}
 
 		/// <summary>
@@ -249,22 +249,22 @@ namespace AsyncPoco
 		{ 
 		}
 
-		/// <summary>
-		/// Starts a transaction scope, see GetTransaction() for recommended usage
-		/// </summary>
-		public async Task BeginTransactionAsync()
-		{
-			_transactionDepth++;
+        /// <summary>
+        /// Starts a transaction scope, see GetTransaction() for recommended usage
+        /// </summary>
+        public async Task BeginTransactionAsync(IsolationLevel isolationLevel=IsolationLevel.Unspecified)
+        {
+            _transactionDepth++;
 
-			if (_transactionDepth == 1)
-			{
-				await OpenSharedConnectionAsync();
-				_transaction = _sharedConnection.BeginTransaction();
-				_transactionCancelled = false;
-				OnBeginTransaction();
-			}
+            if (_transactionDepth == 1)
+            {
+                await OpenSharedConnectionAsync();
+                _transaction = _sharedConnection.BeginTransaction(isolationLevel);
+                _transactionCancelled = false;
+                OnBeginTransaction();
+            }
 
-		}
+        }
 
 		/// <summary>
 		/// Internal helper to cleanup transaction
